@@ -35,12 +35,11 @@ public class BienvenueServlet extends HttpServlet {
 //		response.getWriter().print("Bienvenue au cours de programmation");
 		
 		count++;
+		
+		// Set refresh, autoload time as 5 seconds
+//	    response.setIntHeader("BienvenueServlet", 1);
 		request.setAttribute("count", count);
-		
-		SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		String today =  formater.format(new Date());
-		request.setAttribute("today", today);
-		
+			
 		this.getServletContext().getRequestDispatcher("/WEB-INF/bienvenue.jsp").forward(request, response);
 
 	}
