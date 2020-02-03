@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Servlet implementation class Andouillettes
+ * Servlet implementation class BienvenueServlet
  */
-@WebServlet("/andouillettes")
-public class Andouillettes extends HttpServlet {
+@WebServlet("/bienvenue")
+public class BienvenueServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private static int count=0;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Andouillettes() {
+    public BienvenueServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -30,11 +31,18 @@ public class Andouillettes extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-
-		SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy");
+//		response.getWriter().append("Served at: ").append(request.getContextPath());
+//		response.getWriter().print("Bienvenue au cours de programmation");
+		
+		count++;
+		request.setAttribute("count", count);
+		
+		SimpleDateFormat formater = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		String today =  formater.format(new Date());
 		request.setAttribute("today", today);
-		this.getServletContext().getRequestDispatcher("/WEB-INF/andouillettes.jsp").forward(request, response);
+		
+		this.getServletContext().getRequestDispatcher("/WEB-INF/bienvenue.jsp").forward(request, response);
+
 	}
 
 	/**

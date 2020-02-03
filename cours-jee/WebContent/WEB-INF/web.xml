@@ -21,4 +21,10 @@
     <servlet-name>Andouillettes</servlet-name>
     <servlet-class>org.eclispe.controller.Andouillettes</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>BienvenueServlet</servlet-name>
+    <servlet-class>org.eclispe.controller.BienvenueServlet</servlet-class>
+  </servlet>
+  
+  
 </web-app>
