@@ -23,8 +23,7 @@
 	out.println("Printemps<br>");
 	out.println("Eté<br>");
 	out.println("Autonme<br>");
-	out.println("Hiver<br>");
-	
+	out.println("Hiver<br>");	
 	%>
 	
 </body>
