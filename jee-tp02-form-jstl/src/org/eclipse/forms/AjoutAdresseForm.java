@@ -8,11 +8,16 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.beans.Adresse;
 
 public class AjoutAdresseForm {
+
+	// const variables
 	private static final String CHAMP_RUE = "rue";
 	private static final String CHAMP_CODEPOSTAL = "codePostal";
 	private static final String CHAMP_VILLE = "ville";
 	private String resultat;
 	private Map<String, String> erreurs = new HashMap<String, String>();
+
+	// Email Regex java
+	private static final String EMAIL_REGEX = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
 
 	public Map<String, String> getErreurs() {
 		return erreurs;
@@ -27,21 +32,21 @@ public class AjoutAdresseForm {
 		String codePostal = getValeurChamp(request, CHAMP_CODEPOSTAL);
 		String ville = getValeurChamp(request, CHAMP_VILLE);
 		Adresse adresse = new Adresse();
-		
+
 		try {
 			validateString(rue, CHAMP_RUE);
 		} catch (Exception e) {
 			setErreur(CHAMP_RUE, e.getMessage());
 		}
 		adresse.setRue(rue);
-		
+
 		try {
 			validateInteger(codePostal, CHAMP_CODEPOSTAL, 5);
 		} catch (Exception e) {
 			setErreur(CHAMP_CODEPOSTAL, e.getMessage());
 		}
 		adresse.setCodePostal(codePostal);
-		
+
 		try {
 			validateString(ville, CHAMP_VILLE);
 		} catch (Exception e) {
@@ -62,11 +67,12 @@ public class AjoutAdresseForm {
 	 */
 	public void setErreur(String champ, String message) {
 		erreurs.put(champ, message);
-	} /*
-		 * Méthode utilitaire qui retourne null si un champ est vide, et son contenu
-		 * sinon.
-		 */
-
+	}
+	
+	/*
+	 * Méthode utilitaire qui retourne null si un champ est vide, et son contenu
+	 * sinon.
+	 */
 	private static String getValeurChamp(HttpServletRequest request, String nomChamp) {
 		String valeur = request.getParameter(nomChamp);
 		if (valeur == null || valeur.trim().length() == 0) {
@@ -75,13 +81,14 @@ public class AjoutAdresseForm {
 			return valeur.trim();
 		}
 	}
-	
+
 	public void validateString(String s, String label) throws Exception {
 		if (s != null) {
 			if (s.length() < 2)
 				throw new Exception("Le champ " + label + " doit contenir au moins 2 caractères.");
 			if (!s.matches("[a-zA-Z -]*"))
-				throw new Exception("Le champ " + label + " ne peut contenir que des lettres, des espaces ou des tirets.");
+				throw new Exception(
+						"Le champ " + label + " ne peut contenir que des lettres, des espaces ou des tirets.");
 		} else {
 			throw new Exception("Merci d'entrer le champ " + label + ".");
 		}
@@ -92,9 +99,18 @@ public class AjoutAdresseForm {
 			if (!s.matches("[0-9]*"))
 				throw new Exception("Le champ " + label + " ne peut contenir que des chiffres.");
 			if (s.length() < size)
-				throw new Exception("Le champ " + label + " doit contenir au moins "+size+" chiffres.");
+				throw new Exception("Le champ " + label + " doit contenir au moins " + size + " chiffres.");
 			if (s.length() > size)
-				throw new Exception("Le champ " + label + " doit contenir au plus "+size+" chiffres.");
+				throw new Exception("Le champ " + label + " doit contenir au plus " + size + " chiffres.");
+		} else {
+			throw new Exception("Merci d'entrer le champ " + label + ".");
+		}
+	}
+
+	public void validateEmail(String s, String label) throws Exception {
+		if (s != null) {
+			if (!s.matches(EMAIL_REGEX)) // matche to EmailL regex
+				throw new Exception("Le champ " + label + " ne peut contenir que des chiffres.");
 		} else {
 			throw new Exception("Merci d'entrer le champ " + label + ".");
 		}
