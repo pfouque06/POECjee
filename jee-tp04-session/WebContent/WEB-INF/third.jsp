@@ -9,7 +9,7 @@
 <title>Third page</title>
 </head>
 <body>
-	<%
+<%-- 	<%
 		Cookie[] cks = request.getCookies();
 		if (cks != null) {
 			for (int i = 0; i < cks.length; i++) {
@@ -30,7 +30,7 @@
 			response.sendRedirect("/jee-tp04-session/sessionExpired.html");
 			return; // to stop further execution
 		}
-	%>
+	%> --%>
 	<div align="center">
 		<h1>Third page</h1>
 		<h2>Bonjour ${username}</h2>

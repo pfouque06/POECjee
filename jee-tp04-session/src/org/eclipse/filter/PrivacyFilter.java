@@ -19,6 +19,8 @@ import javax.servlet.http.HttpSession;
 @WebFilter("/*")
 public class PrivacyFilter implements Filter {
 
+	// const
+	public static final String VUE_SESSION_EXPIRED = "/jee-tp04-session/sessionExpired.jsp";
 
 	/**
 	 * @see Filter#doFilter(ServletRequest, ServletResponse, FilterChain)
@@ -32,36 +34,43 @@ public class PrivacyFilter implements Filter {
 		HttpSession session = req.getSession();
 		
 		// on récupère le nom de la session
-		String nom = (String)session.getAttribute("nom");
+		String username = (String)session.getAttribute("username");
 		// on récupère le chemin demandé par l’utilisateur
 		String chemin = req.getServletPath();
 		// on récupère la méthode HTTP utilisée (GET ou POST)
 		String methode = req.getMethod();
 		
-		boolean found = false;
-		if (nom != null || chemin.equals("/") || chemin.equals("/index.jsp") || chemin.equals("/first") && methode.equals("POST")) {
+		if (username != null || chemin.equals("/") || chemin.equals("/index.jsp") || chemin.equals("/first") && methode.equals("POST")) {
 			
-			found = true;
-//			Cookie[] cks = req.getCookies();
-//			if (cks != null) {
-//				for (Cookie ck : cks) {
-//					//String name = ck.getName();
-//					//String value = ck.getValue();
-//					if (ck.getName().equals("Auth")) {
-//						found = true;
-//						break;
-//					}
-//				}
-//			}
-		}
-
-		if (found) 
+			//found = true;
+			if (username != null) {
+				// session is started, then checking cookie
+				Cookie[] cks = req.getCookies();
+				if (cks != null) {
+					for (Cookie ck : cks) { // String name = ck.getName(); //String value = ck.getValue();
+						if (ck.getName().equals("Auth")) {
+							System.out.println("cookie Auth ["+ck.getValue()+"]validated");
+							// pass the request along the filter chain
+							chain.doFilter(request, response);
+							return;
+						}
+					}
+				}
+				System.out.println("cookie Auth expired");
+				session.invalidate();
+				res.sendRedirect(VUE_SESSION_EXPIRED);
+				return;
+			}
+			
+			System.out.println("Session did not started yet");
 			// pass the request along the filter chain
 			chain.doFilter(request, response);
-		else
-			// redirect to initial context
-			//res.sendRedirect("/jee-tp04-session/sessionExpired.html");
-			res.sendRedirect(req.getContextPath());
+			return;
+		}
+
+		// redirect to initial context
+		//res.sendRedirect("/jee-tp04-session/sessionExpired.html");
+		res.sendRedirect(req.getContextPath());
 				
 	}
 

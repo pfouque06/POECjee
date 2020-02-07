@@ -64,21 +64,18 @@ public class FirstServlet extends HttpServlet {
 		Personne personne = new Personne();
 		personne.setUsername(username);
 		personne.setPassword(password);
+		
 		//PrintWriter out = response.getWriter();
-		Cookie ck = new Cookie("Auth", username);
-		//ck.setMaxAge(60 * 60 * 24); // 24h
-		ck.setMaxAge(30); // 30 sec
+		HttpSession session = request.getSession();
 		if (personneDao.validate(personne)) {
-			HttpSession session = request.getSession();
-//				 session.setAttribute("id",id);
-			response.addCookie(ck);
 			session.setAttribute("username", username);
-			//response.sendRedirect("gestionCompte.jsp");
+			Cookie ck = new Cookie("Auth", username);
+			ck.setMaxAge(30); // 30 sec //ck.setMaxAge(60 * 60 * 24); // 24h
+			response.addCookie(ck);
 			this.getServletContext().getRequestDispatcher(VUE_TARGET).forward(request, response);
+			//response.sendRedirect("gestionCompte.jsp");
 		} else {
-			HttpSession session = request.getSession();
-			// session.setAttribute("user", username);
-			response.sendRedirect("index.jsp");
+			response.sendRedirect(VUE_INDEX);
 			//this.getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
 		}
 	}
