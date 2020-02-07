@@ -15,10 +15,15 @@ import org.eclipse.beans.Client;
 /**
  * Servlet implementation class AjoutPersonne
  */
-@WebServlet("/retraitClient")
+@WebServlet("/deleteClient")
 public class RetraitClient extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
+	public static final String ATT_CLIENT = "client";
+	public static final String ATT_FORM = "cform";
+	public static final String VUE_SUCCES = "/WEB-INF/confirmationRetraitClient.jsp";
+	public static final String VUE_FORM = "/WEB-INF/afficherClients.jsp";
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -32,13 +37,32 @@ public class RetraitClient extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath()); 
+		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		
 		ClientDaoImpl clientDao = new ClientDaoImpl();
 		List<Client> clients = clientDao.getAll();
 		request.setAttribute("clients", clients);
 		request.setAttribute("clientsSize", clients.size());
 		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/retraitClient.jsp").forward(request, response);
+		// check if ID is provided as parameter
+		if ( request.getParameter("id").isEmpty()) {
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
+			return;
+		}
+		
+		// validation Client by ID
+		int num = Integer.valueOf(request.getParameter("id"));
+		Client client = clientDao.findById(num);
+		if (client ==null) {
+			//request.setAttribute("num", num);
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);		
+			return;
+		}
+		
+		// remove client
+		request.setAttribute("client", client);
+		clientDao.remove(num);
+		this.getServletContext().getRequestDispatcher(VUE_SUCCES).forward(request, response);	
 	}
 
 	/**
@@ -47,19 +71,7 @@ public class RetraitClient extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
-		
-		int num = Integer.valueOf(request.getParameter("num"));
-		ClientDaoImpl clientDao = new ClientDaoImpl();
-		Client client = clientDao.findById(num);
-		if (client ==null) {
-			request.setAttribute("num", num);
-			this.getServletContext().getRequestDispatcher("/WEB-INF/erreurRetraitClient.jsp").forward(request, response);		
-			return;
-		}
-
-		request.setAttribute("client", client);
-		clientDao.remove(num);
-		this.getServletContext().getRequestDispatcher("/WEB-INF/confirmationRetraitClient.jsp").forward(request, response);		
+	
+		this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);		
 	}
-
 }

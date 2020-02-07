@@ -17,10 +17,17 @@ import org.eclipse.beans.Client;
 /**
  * Servlet implementation class RetraitAdresse
  */
-@WebServlet("/retraitAdresse")
+@WebServlet("/deleteAdresse")
 public class RetraitAdresse extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
+	public static final String ATT_CLIENT = "client";
+	public static final String ATT_CLIENT_FORM = "cform";
+	public static final String ATT_ADRESSE = "adresse";
+	public static final String ATT_ADRESSE_FORM = "aform";
+	public static final String VUE_SUCCES = "/WEB-INF/confirmationRetraitAdresse.jsp";
+	public static final String VUE_FORM = "/WEB-INF/afficherAdresses.jsp";
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -46,7 +53,25 @@ public class RetraitAdresse extends HttpServlet {
 		request.setAttribute("clients", clients);
 		request.setAttribute("clientsSize", clients.size());
 		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/retraitAdresse.jsp").forward(request, response);
+		// check if ID is provided as parameter
+		if ( request.getParameter("id").isEmpty()) {
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
+			return;
+		}
+		
+		// validation Adresse by ID
+		int num = Integer.valueOf(request.getParameter("id"));
+		Adresse adresse = adresseDao.findById(num);
+		if (adresse ==null) {
+			//request.setAttribute("num", num);
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);		
+			return;
+		}
+		
+		// remove client
+		request.setAttribute("adresse", adresse);
+		adresseDao.remove(num);
+		this.getServletContext().getRequestDispatcher(VUE_SUCCES).forward(request, response);	
 	}
 
 	/**
@@ -56,19 +81,7 @@ public class RetraitAdresse extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		
-		int num = Integer.valueOf(request.getParameter("num"));
-		AdresseDaoImpl adresseDao = new AdresseDaoImpl();
-		Adresse adresse = adresseDao.findById(num);
-		if (adresse ==null) {
-			request.setAttribute("num", num);
-			this.getServletContext().getRequestDispatcher("/WEB-INF/erreurRetraitAdresse.jsp").forward(request, response);		
-			return;
-		}
-
-		request.setAttribute("adresse", adresse);
-		adresseDao.remove(num);
-		this.getServletContext().getRequestDispatcher("/WEB-INF/confirmationRetraitAdresse.jsp").forward(request, response);		
-
+		this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
 	}
 
 }

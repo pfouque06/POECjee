@@ -60,7 +60,7 @@ public class AjoutAdresseForm {
 	/*
 	 * Ajoute un message correspondant au champ spécifié à la map des erreurs.
 	 */
-	private void setErreur(String champ, String message) {
+	public void setErreur(String champ, String message) {
 		erreurs.put(champ, message);
 	} /*
 		 * Méthode utilitaire qui retourne null si un champ est vide, et son contenu
@@ -72,7 +72,7 @@ public class AjoutAdresseForm {
 		if (valeur == null || valeur.trim().length() == 0) {
 			return null;
 		} else {
-			return valeur;
+			return valeur.trim();
 		}
 	}
 	
@@ -80,8 +80,8 @@ public class AjoutAdresseForm {
 		if (s != null) {
 			if (s.length() < 2)
 				throw new Exception("Le champ " + label + " doit contenir au moins 2 caractères.");
-			if (!s.matches("[a-zA-Z]*"))
-				throw new Exception("Le champ " + label + " ne peut contenir que des lettres.");
+			if (!s.matches("[a-zA-Z -]*"))
+				throw new Exception("Le champ " + label + " ne peut contenir que des lettres, des espaces ou des tirets.");
 		} else {
 			throw new Exception("Merci d'entrer le champ " + label + ".");
 		}

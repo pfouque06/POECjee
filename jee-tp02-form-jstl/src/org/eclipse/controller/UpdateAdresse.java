@@ -13,6 +13,8 @@ import org.eclipse.Dao.AdresseDaoImpl;
 import org.eclipse.Dao.ClientDaoImpl;
 import org.eclipse.beans.Adresse;
 import org.eclipse.beans.Client;
+import org.eclipse.forms.AjoutAdresseForm;
+import org.eclipse.forms.AjoutClientForm;
 
 /**
  * Servlet implementation class RetraitAdresse
@@ -20,7 +22,15 @@ import org.eclipse.beans.Client;
 @WebServlet("/updateAdresse")
 public class UpdateAdresse extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
+	public static final String ATT_CLIENT = "client";
+	public static final String ATT_CLIENT_FORM = "cform";
+	public static final String ATT_ADRESSE = "adresse";
+	public static final String ATT_ADRESSE_FORM = "aform";
+	public static final String VUE_SUCCES = "/WEB-INF/confirmationUpdateAdresse.jsp";
+	public static final String VUE_FAILED = "/WEB-INF/erreurUpdateAdresse.jsp";
+	public static final String VUE_FORM = "/WEB-INF/updateAdresse.jsp";
+	
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -46,7 +56,28 @@ public class UpdateAdresse extends HttpServlet {
 		request.setAttribute("clients", clients);
 		request.setAttribute("clientsSize", clients.size());
 		
-		this.getServletContext().getRequestDispatcher("/WEB-INF/updateAdresse.jsp").forward(request, response);
+		// check if ID is provided as parameter
+		if ( request.getParameter("id").isEmpty()) {
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
+			return;
+		}
+		
+		// validation Adresse by ID
+		int num = Integer.valueOf(request.getParameter("id"));
+		Adresse adresse = adresseDao.findById(num);
+		if (adresse ==null) {
+			//request.setAttribute("num", num);
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);		
+			return;
+		}
+		
+		// regenerate Formulaire adresse
+		request.setAttribute("idSaisi", adresse.getNum());
+		request.setAttribute("rueSaisi", adresse.getRue());
+		request.setAttribute("codePostalSaisi", adresse.getCodePostal());
+		request.setAttribute("villeSaisi", adresse.getVille());
+		
+		this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
 	}
 
 	/**
@@ -56,70 +87,44 @@ public class UpdateAdresse extends HttpServlet {
 		// TODO Auto-generated method stub
 		//doGet(request, response);
 		
-		int num = Integer.valueOf(request.getParameter("num"));
-		request.setAttribute("num", num);
-		AdresseDaoImpl adresseDao = new AdresseDaoImpl();
-		Adresse adresse = adresseDao.findById(num);
-		if (adresse ==null) {
-			this.getServletContext().getRequestDispatcher("/WEB-INF/erreurUpdateAdresse.jsp").forward(request, response);		
-			return;
-		}
+		// Traitement du formulaire d'adresse et récupération du bean en résultante
+		AjoutAdresseForm aform = new AjoutAdresseForm();
+		Adresse adresse = aform.creerAdresse(request);
+		// get and validate client ID
+		String id = request.getParameter("id");
+		if (!id.matches("[0-9]*"))
+			aform.setErreur("id", "Le champ ID ne peut contenir que des chiffres.");
 
-		//Adresse
-		String rue= request.getParameter("rue");
-		String ville= request.getParameter("ville");
-		String codePostal= request.getParameter("codePostal");
-		System.out.println("1");
-		int ClientID;
-		// Adresse validation
-		if (rue.trim().isEmpty() ||
-				ville.trim().isEmpty() ||
-				codePostal.trim().isEmpty() ) { // impossible de créer une adresse
-			this.getServletContext().getRequestDispatcher("/WEB-INF/erreurUpdateAdresse.jsp").forward(request, response);
+		// Ajout du bean et de l'objet métier à l'objet requête
+		request.setAttribute(ATT_ADRESSE, adresse);
+		request.setAttribute(ATT_ADRESSE_FORM, aform);
+
+		if (! aform.getErreurs().isEmpty() ) {
+			// regenerate Formulaire adresse
+			request.setAttribute("idSaisi", id);
+			request.setAttribute("rueSaisi", adresse.getRue());
+			request.setAttribute("codePostalSaisi", adresse.getCodePostal());
+			request.setAttribute("villeSaisi", adresse.getVille());
+			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
 			return;
 		}
 		
-		//Client
-		String nom = request.getParameter("nom");
-		String prenom = request.getParameter("prenom");
-		String telephone = request.getParameter("telephone");
-		
-		System.out.println("2");
-		// Client validation
-		if (nom.trim().isEmpty() ||
-			prenom.trim().isEmpty() ||
-			telephone.trim().isEmpty() ) { // impossible de créer un client
-			ClientID = -1;
-		} else {
-			System.out.println("3");
-			// client is instanced
-			Client client = new Client();
-			client.setNom(nom);
-			client.setPrenom(prenom);
-			client.setTelephone(telephone);
-			
-			// Client persist
-			ClientDaoImpl personneDao = new ClientDaoImpl();
-			Client insertedClient = personneDao.save(client);
-			request.setAttribute("client", insertedClient);
-			ClientID = insertedClient.getNum();
-			System.out.println(insertedClient);
+		// validation is OK, persist adresse
+		AdresseDaoImpl adresseDao = new AdresseDaoImpl();
+		Adresse insertedAdresse = adresseDao.findById(Integer.valueOf(id));
+		if ( insertedAdresse == null ) {
+			request.setAttribute("numSaisi", id);
+			this.getServletContext().getRequestDispatcher(VUE_FAILED).forward(request, response);		
+			return;
 		}
 		
-		System.out.println("4");
-		// Adresse
-		adresse.setRue(rue);
-		adresse.setCodePostal(codePostal);
-		adresse.setVille(ville);
-		adresse.setClientID(ClientID);
-		System.out.println(adresse);
-		
-		// Adresse Persist
-		Adresse insertedAdresse = adresseDao.update(adresse);
-		if ( insertedAdresse != null ) 
-			request.setAttribute("adresse", insertedAdresse);
-		System.out.println(insertedAdresse);
-		this.getServletContext().getRequestDispatcher("/WEB-INF/confirmationUpdateAdresse.jsp").forward(request, response);		
+		// Adresse update
+		insertedAdresse.setRue(adresse.getRue());
+		insertedAdresse.setCodePostal(adresse.getCodePostal());
+		insertedAdresse.setVille(adresse.getVille());
+		insertedAdresse = adresseDao.update(insertedAdresse);
+		request.setAttribute("adresse", insertedAdresse);
+		this.getServletContext().getRequestDispatcher(VUE_SUCCES).forward(request, response);	
 	}
 
 }

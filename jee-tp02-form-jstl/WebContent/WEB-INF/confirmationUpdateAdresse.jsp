@@ -1,19 +1,19 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+VUE_FORM<%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Création d'un client</title>
+<title>Retrait d'une adresse</title>
 </head>
 <body>
 	<%-- <jsp:include page="/WEB-INF/linksListe.jsp"></jsp:include> --%>
 	<jsp:directive.include file="linksListe.jsp" />
 	<br>
 	<div align="center">
-		<h2>Formulaire client</h2>
+		<h2>Retrait adresse</h2>
 		<span>
-		Le client ${ client.prenom } ${ client.nom } ${ client.telephone } a été enregistré dans la base.
+		L'adresse ${ adresse.num } ${ adresse.rue } ${ adresse.codePostal } ${ adresse.ville } a bien été mise à jour dans la base.
 		</span>
 	</div>
 </body>

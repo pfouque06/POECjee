@@ -14,7 +14,7 @@ public class Adresse implements Serializable {
 		super();
 	}
 
-	public Adresse(int num, String rue, String ville, String codePostal, int clientID) {
+	public Adresse(int num, String rue, String codePostal, String ville, int clientID) {
 		super();
 		this.num = num;
 		this.rue = rue;

@@ -60,7 +60,7 @@ public class CreationAdresse extends HttpServlet {
 		request.setAttribute(ATT_ADRESSE, adresse);
 		request.setAttribute(ATT_ADRESSE_FORM, aform);
 
-		// regenerate Formulaire
+		// regenerate Formulaire adresse
 		request.setAttribute("rueSaisi", adresse.getRue());
 		request.setAttribute("codePostalSaisi", adresse.getCodePostal());
 		request.setAttribute("villeSaisi", adresse.getVille());
@@ -74,35 +74,35 @@ public class CreationAdresse extends HttpServlet {
 		request.setAttribute(ATT_CLIENT, client);
 		request.setAttribute(ATT_CLIENT_FORM, cform);
 
-		// regenerate Formulaire
+		// regenerate Formulaire client
 		request.setAttribute("nomSaisi", client.getNom());
 		request.setAttribute("prenomSaisi", client.getPrenom());
 		request.setAttribute("telephoneSaisi", client.getTelephone());
-				
-		if (cform.getErreurs().isEmpty()) {
-			// validation is OK, persist client and get new client ID
-			ClientDaoImpl personneDao = new ClientDaoImpl();
-			Client insertedClient = personneDao.save(client);
-			request.setAttribute("client", insertedClient);
-			clientID = insertedClient.getNum();
-		} else {
-
-
+		
+		if (! aform.getErreurs().isEmpty() || ! cform.getErreurs().isEmpty()) {
+			System.out.println("erreur sur formulaire stored");
+			
 			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
+			return;
 		}
+		
+		// validation is OK, persist client and get new client ID
+		ClientDaoImpl personneDao = new ClientDaoImpl();
+		Client insertedClient = personneDao.save(client);
+		request.setAttribute("client", insertedClient);
+		System.out.println("client stored");
 		
 		// set previously stored client
+		clientID = insertedClient.getNum();
 		adresse.setClientID(clientID);
-		
-		if (aform.getErreurs().isEmpty()) {
-			// validation is OK, persist adresse
-			AdresseDaoImpl adresseDao = new AdresseDaoImpl();
-			Adresse insertedAdresse = adresseDao.save(adresse);
-			if ( insertedAdresse != null ) 
-				request.setAttribute("adresse", insertedAdresse);
-			this.getServletContext().getRequestDispatcher(VUE_SUCCES).forward(request, response);
-		} else {
-			this.getServletContext().getRequestDispatcher(VUE_FORM).forward(request, response);
-		}
+		System.out.println("client ID = " + clientID);
+	
+		// validation is OK, persist adresse
+		AdresseDaoImpl adresseDao = new AdresseDaoImpl();
+		Adresse insertedAdresse = adresseDao.save(adresse);
+		if ( insertedAdresse != null ) 
+			request.setAttribute("adresse", insertedAdresse);
+		System.out.println("adresse stored");
+		this.getServletContext().getRequestDispatcher(VUE_SUCCES).forward(request, response);
 	}
 }

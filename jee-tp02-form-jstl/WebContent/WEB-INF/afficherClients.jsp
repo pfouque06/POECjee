@@ -7,9 +7,11 @@
 <title>Liste des clients</title>
 </head>
 <body>
-<jsp:directive.include file="forEachClients.jsp" />
-<br>
 <%-- <jsp:include page="/WEB-INF/linksListe.jsp"></jsp:include> --%>
-<jsp:directive.include file="linksListe.jsp" />
+<%-- <jsp:directive.include file="linksListe.jsp" /> --%>
+<c:import url="linksListe.jsp"></c:import>
+<br>
+<%-- <jsp:directive.include file="forEachClients.jsp" /> --%>
+<c:import url="forEachClients.jsp"></c:import>
 </body>
 </html>

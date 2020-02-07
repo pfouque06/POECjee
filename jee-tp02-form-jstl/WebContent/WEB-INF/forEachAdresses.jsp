@@ -1,36 +1,51 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Liste des adresses</title>
-</head>
-<body>
-	Adresses :
-	<br>
-	<c:forEach items="${adresses }" var="adresse">
-		<c:out
-			value="- [${adresse.num }] ${adresse.rue } ${ adresse.codePostal } ${ adresse.ville }" />
-		<br>
-		<c:set var="result" value="false" />
+	pageEncoding="UTF-8"%>	
+<div align="center">
+	<table border="0"  cellpadding="3">
+		<caption>
+			<h2>Liste des adresses</h2>
+		</caption>
+		<tr>
+			<th>ID</th>
+			<th>Rue</th>
+			<th>Code postale</th>
+			<th>Ville</th>
+			<th>Nom</th>
+			<th>Prénom</th>
+			<th>Téléphone</th>
+			<th>Actions</th>
+		</tr>
+		<c:forEach var="adresse" items="${adresses }">
+		
+			<tr>
+				<td><c:out value="${adresse.num}" /></td>
+				<td><c:out value="${adresse.rue}" /></td>
+				<td><c:out value="${adresse.codePostal}" /></td>
+				<td><c:out value="${adresse.ville}" /></td>
 
-		<c:forEach items="${clients }" var="client">
-			<c:if test="${adresse.clientID == client.num}">
-				<c:set var="result" value="true" />
-				<c:out
-					value="## [${client.num }] ${client.nom } ${ client.prenom } ${ client.telephone }" />
-				<br>
-			</c:if>
+				<c:set var="result" value="false" />
+				<c:forEach var="client" items="${clients}">
+					<c:if test="${adresse.clientID == client.num}">
+						<c:set var="result" value="true" />
+						<td><c:out value="${client.nom}" /></td>
+						<td><c:out value="${client.prenom}" /></td>
+						<td><c:out value="${client.telephone}" /></td>
+					</c:if>
+				</c:forEach>
+				<c:if test="${result ne 'true'}">
+					<td></td>
+					<td></td>
+					<td></td>
+				</c:if>
+				<td>
+					<a href="updateAdresse?id=<c:out value='${adresse.num}' />">Edit</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="deleteAdresse?id=<c:out value='${adresse.num}' />">Delete</a>
+				</td>
+			</tr>
 		</c:forEach>
-
-		<c:if test="${result ne 'true'}">## aucun client !! <br>
-		</c:if>
-		<br>
-	</c:forEach>
-
-	<br> nombre d'adresses : ${ adressesSize }
+	</table>
 	<br>
-</body>
-</html>
+	nombre d'adresses : ${ adressesSize }
+	<br>
+</div>
