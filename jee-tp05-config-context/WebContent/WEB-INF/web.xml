@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	id="WebApp_ID" version="4.0">
+	<display-name>jee-tp05-config-context</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<servlet-name>Recruiter</servlet-name>
+		<servlet-class>org.eclipse.controllers.Recruiter</servlet-class>
+		<init-param>
+			<param-name>Email</param-name>
+			<param-value>forRecruiter@xyz.com</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Recruiter</servlet-name>
+		<url-pattern>/recruiter</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>Applicant</servlet-name>
+		<servlet-class>org.eclipse.controllers.Applicant</servlet-class>
+		<init-param>
+			<param-name>Email</param-name>
+			<param-value>forApplicant@xyz.com</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Applicant</servlet-name>
+		<url-pattern>/applicant</url-pattern>
+	</servlet-mapping>
+	
+	<context-param>
+		<param-name>Website-name</param-name>
+		<param-value>NewWebsite.tg</param-value>
+	</context-param>
+</web-app>
