@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="org.eclipse.utils.*"%>
-<%@page import="org.eclipse.beans.Personne"%>
 <!DOCTYPE html>
 <html>
 <head>

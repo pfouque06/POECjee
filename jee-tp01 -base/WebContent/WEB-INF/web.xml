@@ -21,7 +21,7 @@
 		</jsp-property-group>
 	</jsp-config>
 
-	<servlet>
+<!-- 	<servlet>
 		<servlet-name>TestServlet</servlet-name>
 		<servlet-class>org.eclispe.controller.TestServlet</servlet-class>
 	</servlet>
@@ -44,6 +44,6 @@
 	<servlet>
 		<servlet-name>ListePersonnes</servlet-name>
 		<servlet-class>org.eclispe.controller.ListePersonnes</servlet-class>
-	</servlet>
+	</servlet> -->
 
 </web-app>

@@ -4,11 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>ession Expirée</title>
+<title>Session Expirée</title>
 </head>
 <body>
 <%
-	HttpSession session = request.getSession();
+	//HttpSession session = request.getSession();
 	session.invalidate();
 %>
 Session Expirée

@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.beans.Personne;
+
 /**
  * Servlet implementation class TestServlet
  */
@@ -45,6 +47,12 @@ public class TestServlet02 extends HttpServlet {
 		
 		String ville = "Nice";
 		request.setAttribute("maVille", ville);
+		
+		Personne perso1 = new Personne();
+		perso1.setNom("Deeper");
+		perso1.setPrenom("John");
+		perso1.setNum(100);
+		request.setAttribute("perso1", perso1);
 		
 		ArrayList<String> sport = new ArrayList<>();
 		sport.add("hockey");

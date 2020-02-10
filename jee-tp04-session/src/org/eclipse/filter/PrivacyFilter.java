@@ -40,7 +40,11 @@ public class PrivacyFilter implements Filter {
 		// on récupère la méthode HTTP utilisée (GET ou POST)
 		String methode = req.getMethod();
 		
-		if (username != null || chemin.equals("/") || chemin.equals("/index.jsp") || chemin.equals("/first") && methode.equals("POST")) {
+		if (username != null || 
+				chemin.equals("/") || 
+				chemin.equals("/index.jsp") || 
+				chemin.equals("/sessionExpired.jsp") || 
+				chemin.equals("/first") && methode.equals("POST")) {
 			
 			//found = true;
 			if (username != null) {
